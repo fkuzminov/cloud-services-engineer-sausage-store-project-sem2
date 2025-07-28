@@ -69,10 +69,47 @@ backend-report:
 ### Опишите HPA для backend-report
 
 infra:
-  postgresql:
-  ### Опишите необходимые переменные для развертывания PostgresQL в кластере Kubernetes
+  # MongoDB configuration
   mongodb:
+    # Container settings
+    replicas: 1
+    image: mongo:7.0
+    containerPort: 27017
+    # Resource limits and requests
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 50m
+      limits:
+        memory: 256Mi
+        cpu: 100m
+    # Volume settings
+    volumeName: mongodb-data
+    storage: 1Gi
+    # Environment variables for MongoDB initialization
     env:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
-    containerPort: 27017
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+  # PostgreSQL configuration
+  postgresql:
+    # Container settings
+    replicas: 1
+    image: postgres:15
+    containerPort: 5432
+    # Resource limits and requests
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 250m
+      limits:
+        memory: 512Mi
+        cpu: 500m
+    # Volume settings
+    volumeName: postgresql-data
+    storage: 2Gi
+    # Environment variables for PostgreSQL initialization
+    env:
+      POSTGRES_DB: sausage-store
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
