@@ -9,6 +9,7 @@ RUN npm run build
 
 
 FROM nginx:1.27-alpine
+RUN rm -rf /usr/share/nginx/html && mkdir -p /usr/share/nginx/html
 COPY --from=build /app/dist/frontend /usr/share/nginx/html
 RUN adduser -D -s /sbin/nologin nonroot && \
     mkdir -p /tmp/nginx && \
