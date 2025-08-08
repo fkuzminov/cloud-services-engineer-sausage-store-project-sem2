@@ -1,0 +1,8 @@
+CPU (request) = 2 (2000m)
+Memory (request) = 1000Mi (≈1GB)
+CPU (limit)	= 3 (3000m)
+Memory (limit) = 2500Mi (≈2.5GB)
+Pods=10
+Services=5
+Secrets=10
+ConfigMaps=10
