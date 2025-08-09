@@ -1,13 +1,15 @@
 global:
   imagePullPolicy: Always
-  ###vault:
-  ###  host: ip
-  ###  name: vault
-  ###  vaultToken: someToken
-
+  mongodb:
+    username: root
+    password: rootpassword
+  postgresql:
+    username: store
+    password: storepassword
+    db: sausage-store
+  dockerhub: teodorriyce
 
 frontend:
-### В чарте frontend отсутствуют некоторые важные файлы. Поймите какие и опишите их.
   replicas: 1
   revisionHistoryLimit: 15
   strategy:
@@ -19,7 +21,7 @@ frontend:
     path: /
     pathType: Prefix
   containerPort: 80
-  image: YOUR_DOCKERHUB/sausage-frontend:latest
+  image: teodorriyce/sausage-frontend:latest
   resources:
     requests:
       memory: "128Mi"
@@ -45,7 +47,7 @@ backend:
   revisionHistoryLimit: 15
   replicas: 1
   strategy:
-  ### Опишите стратегию RollingUpdate для бэкенда
+    type: RollingUpdate
   image: YOUR_DOCKERHUB/sausage-backend:latest
   imagePullPolicy: Always
   resources:
@@ -62,11 +64,27 @@ backend:
   ### Опишите VPA для бэкенда
 
 backend-report:
-### Опишите значения для backend-report
-### Приложение должно использовать стратегию Recreate
-### Приложение использует переменную PORT - порт, на котором оно запустится и DB - Uri-подключение к mongodb. 
-### DB положите в Secret, PORT в ConfigMap
-### Опишите HPA для backend-report
+  config:
+    port: &brp 8081
+  deployment:
+    replicas: 1
+    strategyType: Recreate
+    image: "teodorriyce/sausage-backend-report:latest"
+    containerPort: *brp
+    requestCpu: 100m
+    requestMemory: 128Mi
+    limitCpu: 250m
+    limitMemory: 256Mi
+  hpa:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 75
+  secret:
+    connectionString: "mongodb://root:password@mongodb:27017"
+  service:
+    type: ClusterIP
+    port: *brp
 
 infra:
   # MongoDB configuration
