@@ -10,25 +10,24 @@ global:
   dockerhub: teodorriyce
 
 frontend:
-  replicas: 1
-  revisionHistoryLimit: 15
-  strategy:
-    type: Recreate
-  service:
-    port: 80
+  deployment:
+    revisionHistoryLimit: 15
+    replicas: 1
+    strategyType: Recreate
+    containerPort: &frontendPort 80
+    image: teodorriyce/sausage-frontend:latest
+    requestCpu: 100m
+    requestMemory: 128Mi
+    limitCpu: 1
+    limitMemory: 128Mi
   ingress:
-    host: YOUR_STUDENT_HOSTNAME.students-projects.ru # Корректный домен будет указан в задании
+    host: teodor.students-projects.ru
     path: /
     pathType: Prefix
-  containerPort: 80
-  image: teodorriyce/sausage-frontend:latest
-  resources:
-    requests:
-      memory: "128Mi"
-      cpu: "100m"
-    limits:
-      memory: "128Mi"
-      cpu: "1"
+    secretName: 2sem-students-projects-wildcard-secret
+  service:
+    port: *frontendPort
+    type: ClusterIP
   nginxConf: nginx.conf
 
 backend:
@@ -65,12 +64,12 @@ backend:
 
 backend-report:
   config:
-    port: &brp 8081
+    port: &backendReportPort 8081
   deployment:
     replicas: 1
     strategyType: Recreate
     image: "teodorriyce/sausage-backend-report:latest"
-    containerPort: *brp
+    containerPort: *backendReportPort
     requestCpu: 100m
     requestMemory: 128Mi
     limitCpu: 250m
@@ -84,7 +83,7 @@ backend-report:
     connectionString: "mongodb://root:password@mongodb:27017"
   service:
     type: ClusterIP
-    port: *brp
+    port: *backendReportPort
 
 infra:
   # MongoDB configuration

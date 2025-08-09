@@ -13,10 +13,10 @@ metadata:
     app.kubernetes.io/component: {{ .Chart.Name }}
     app.kubernetes.io/part-of: {{ .Release.Name }}
 spec:
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  replicas: {{ .Values.replicas }}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
+  replicas: {{ .Values.deployment.replicas }}
   strategy:
-    type: {{ .Values.strategy.type }}
+    type: "{{ .Values.deployment.strategyType }}"
   selector:
     matchLabels:
       app: {{ .Release.Name }}-{{ .Chart.Name }}
@@ -26,14 +26,19 @@ spec:
         app: {{ .Release.Name }}-{{ .Chart.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: {{ .Values.image }}
-          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        - name: "{{ .Chart.Name }}"
+          image: "{{ .Values.deployment.image }}"
+          imagePullPolicy: Always
           resources:
-{{ toYaml .Values.resources | indent 12 }} 
+            requests:
+              memory: "{{ .Values.deployment.requestMemory }}"
+              cpu: "{{ .Values.deployment.requestCpu }}"
+            limits:
+              memory: "{{ .Values.deployment.limitMemory }}"
+              cpu: "{{ .Values.deployment.limitCpu }}"
           ports:
             - name: {{ .Chart.Name }}
-              containerPort: {{ .Values.containerPort }}
+              containerPort: {{ .Values.deployment.containerPort }}
           volumeMounts:
           - name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
             mountPath: /etc/nginx/{{ .Values.nginxConf }}
@@ -45,4 +50,4 @@ spec:
             name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
             items:
               - key: {{ .Values.nginxConf }}
-                path: {{ .Values.nginxConf }} 
+                path: {{ .Values.nginxConf }}

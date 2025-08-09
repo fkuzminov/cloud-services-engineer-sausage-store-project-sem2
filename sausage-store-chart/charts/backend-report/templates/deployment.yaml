@@ -48,5 +48,3 @@ spec:
             limits:
               memory: "{{ .Values.deployment.limitMemory }}"
               cpu: "{{ .Values.deployment.limitCpu }}"
-
-
