@@ -33,7 +33,7 @@ frontend:
 backend:
   annotations:
     path: /actuator/prometheus
-    port: "8080"
+    port: &backendPort "8080"
     scrape: "true"
   env:
     postgresUri: jdbc:postgresql://postgresql:5432/sausage-store
@@ -42,7 +42,7 @@ backend:
     reportPath: /logs/reports
     logPath: /logs
   service:
-    port: 8080
+    port: *backendPort
   revisionHistoryLimit: 15
   replicas: 1
   strategy:
@@ -56,11 +56,19 @@ backend:
     limits:
       memory: "512Mi"
       cpu: "1"
-  containerPort: 8080
+  containerPort: *backendPort
   livenessProbe:
-  ### Опишите LivenessProbe для бэкенда
+    path: /actuator/health
+    port: *backendPort
   vpa:
-  ### Опишите VPA для бэкенда
+    enabled: true
+    updatePolicy:
+      updateMode: "Auto"
+    resourcePolicy:
+      minAllowedCpu: 100m
+      minAllowedMemory: 128Mi
+      maxAllowedCpu: 2
+      maxAllowedMemory: 1Gi
 
 backend-report:
   config:

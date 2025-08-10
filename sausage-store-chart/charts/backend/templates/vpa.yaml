@@ -1,0 +1,28 @@
+{{- if .Values.vpa.enabled }}
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: "{{ .Release.Name }}-{{ .Chart.Name }}-vpa"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+spec:
+  targetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: "{{ .Release.Name }}-{{ .Chart.Name }}"
+  updatePolicy:
+    updateMode: "{{ .Values.vpa.updatePolicy.updateMode }}"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: "{{ .Chart.Name }}"
+        minAllowed:
+          cpu: "{{ .Values.vpa.resourcePolicy.minAllowedCpu }}"
+          memory: "{{ .Values.vpa.resourcePolicy.minAllowedMemory }}"
+        maxAllowed:
+          cpu: "{{ .Values.vpa.resourcePolicy.maxAllowedCpu }}"
+          memory: "{{ .Values.vpa.resourcePolicy.maxAllowedMemory }}"
+        controlledResources: ["cpu", "memory"]
+{{- end }}
