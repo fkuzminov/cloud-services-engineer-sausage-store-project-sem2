@@ -6,9 +6,9 @@ metadata:
 spec:
   ingressClassName: "nginx"
   tls:
-    hosts:
-      - {{ .Values.ingress.host }}
-    secretName: {{ .Values.ingress.secretName }}
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.secretName }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:
