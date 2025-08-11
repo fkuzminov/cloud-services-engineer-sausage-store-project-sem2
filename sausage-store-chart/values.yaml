@@ -1,13 +1,5 @@
 global:
   imagePullPolicy: Always
-  mongodb:
-    username: root
-    password: rootpassword
-  postgresql:
-    username: store
-    password: storepassword
-    db: sausage-store
-  dockerhub: teodorriyce
 
 frontend:
   deployment:
@@ -15,7 +7,7 @@ frontend:
     replicas: 1
     strategyType: Recreate
     containerPort: &frontendPort 80
-    image: teodorriyce/sausage-frontend:latest
+    image: "teodorriyce/sausage-frontend:latest"
     requestCpu: 100m
     requestMemory: 128Mi
     limitCpu: 1
@@ -37,8 +29,8 @@ backend:
     scrape: "true"
   env:
     postgresUri: jdbc:postgresql://postgresql:5432/sausage-store
-    postgresUser: store
-    postgresPassword: storepassword
+    postgresUser: root
+    postgresPassword: password
     reportPath: /logs/reports
     logPath: /logs
   service:
@@ -47,7 +39,7 @@ backend:
   replicas: 1
   strategy:
     type: RollingUpdate
-  image: YOUR_DOCKERHUB/sausage-backend:latest
+  image: "teodorriyce/sausage-backend:latest"
   imagePullPolicy: Always
   resources:
     requests:
@@ -132,7 +124,7 @@ infra:
         cpu: 500m
     # Volume settings
     volumeName: postgresql-data
-    storage: 2Gi
+    storage: 1Gi
     # Environment variables for PostgreSQL initialization
     env:
       POSTGRES_DB: sausage-store

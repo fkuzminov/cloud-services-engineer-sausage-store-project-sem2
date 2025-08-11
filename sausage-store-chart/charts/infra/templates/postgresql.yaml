@@ -6,7 +6,7 @@ metadata:
     helm.sh/hook-weight: "-5"
 spec:
   serviceName: postgresql
-  replicas: {{ .Values.postgresql.replicas | default 1 }}
+  replicas: {{ .Values.postgresql.replicas }}
   selector:
     matchLabels:
       app: postgresql
@@ -25,13 +25,13 @@ spec:
         - containerPort: {{ .Values.postgresql.containerPort }}
         resources:
           requests:
-            memory: {{ .Values.postgresql.resources.requests.memory | default "256Mi" }}
-            cpu: {{ .Values.postgresql.resources.requests.cpu | default "250m" }}
+            memory: {{ .Values.postgresql.resources.requests.memory }}
+            cpu: {{ .Values.postgresql.resources.requests.cpu }}
           limits:
-            memory: {{ .Values.postgresql.resources.limits.memory | default "512Mi" }}
-            cpu: {{ .Values.postgresql.resources.limits.cpu | default "500m" }}
+            memory: {{ .Values.postgresql.resources.limits.memory }}
+            cpu: {{ .Values.postgresql.resources.limits.cpu }}
         volumeMounts:
-        - name: {{ .Values.postgresql.volumeName | default "mongodb-data" }}
+        - name: {{ .Values.postgresql.volumeName }}
           mountPath: /var/lib/postgresql/data
         livenessProbe: &postgresql_health_check
           exec:
@@ -52,7 +52,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.postgresql.storage | default "2Gi" }}
+          storage: {{ .Values.postgresql.storage }}
 ---
 apiVersion: v1
 kind: Service
@@ -73,8 +73,8 @@ kind: ConfigMap
 metadata:
   name: postgresql-conf
 data:
-  POSTGRES_DB: {{ .Values.postgresql.env.POSTGRES_DB }}
-  POSTGRES_USER: {{ .Values.postgresql.env.POSTGRES_USER }}
-  POSTGRES_PASSWORD: {{ .Values.postgresql.env.POSTGRES_PASSWORD }}
-  PGDATA: /var/lib/postgresql/data/pgdata
+  POSTGRES_DB: "{{ .Values.postgresql.env.POSTGRES_DB }}"
+  POSTGRES_USER: "{{ .Values.postgresql.env.POSTGRES_USER }}"
+  POSTGRES_PASSWORD: "{{ .Values.postgresql.env.POSTGRES_PASSWORD }}"
+  PGDATA: "/var/lib/postgresql/data/pgdata"
 
