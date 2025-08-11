@@ -28,7 +28,7 @@ spec:
       containers:
         - name: "{{ .Chart.Name }}"
           image: "{{ .Values.deployment.image }}"
-          imagePullPolicy: Always
+          imagePullPolicy: "{{ .Values.global.imagePullPolicy }}"
           resources:
             requests:
               memory: "{{ .Values.deployment.requestMemory }}"
