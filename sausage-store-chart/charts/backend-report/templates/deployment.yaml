@@ -24,6 +24,8 @@ spec:
       labels:
         app: "{{ .Release.Name }}-{{ .Chart.Name }}"
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
         - name: "{{ .Chart.Name }}"
           image: "{{ .Values.deployment.image }}"
