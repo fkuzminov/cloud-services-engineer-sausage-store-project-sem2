@@ -33,18 +33,6 @@ spec:
         volumeMounts:
           - name: {{ .Values.mongodb.volumeName | default "mongodb-data" }}
             mountPath: /data/db
-        livenessProbe: &mongodb_health_check
-          exec:
-            command:
-              - mongosh
-              - --eval
-              - "db.adminCommand('ping')"
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          <<: *mongodb_health_check
-          initialDelaySeconds: 5
-          periodSeconds: 5
   volumeClaimTemplates:
   - metadata:
       name: mongodb-data

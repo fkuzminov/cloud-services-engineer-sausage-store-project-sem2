@@ -10,10 +10,10 @@ frontend:
     image: "teodorriyce/sausage-frontend:latest"
     requestCpu: 100m
     requestMemory: 128Mi
-    limitCpu: 1
-    limitMemory: 128Mi
+    limitCpu: 200m
+    limitMemory: 256Mi
   ingress:
-    host: teodor.students-projects.ru
+    host: teodor.sem2.students-projects.ru
     path: /
     pathType: Prefix
     secretName: 2sem-students-projects-wildcard-secret
@@ -43,11 +43,11 @@ backend:
   imagePullPolicy: Always
   resources:
     requests:
-      memory: "256Mi"
+      memory: "128Mi"
       cpu: "100m"
     limits:
       memory: "512Mi"
-      cpu: "1"
+      cpu: "400m"
   containerPort: *backendPort
   livenessProbe:
     path: /actuator/health
@@ -70,10 +70,10 @@ backend-report:
     strategyType: Recreate
     image: "teodorriyce/sausage-backend-report:latest"
     containerPort: *backendReportPort
-    requestCpu: 100m
-    requestMemory: 128Mi
-    limitCpu: 250m
-    limitMemory: 256Mi
+    requestCpu: 128m
+    requestMemory: 100Mi
+    limitCpu: 256m
+    limitMemory: 200Mi
   hpa:
     enabled: true
     minReplicas: 1
@@ -96,10 +96,10 @@ infra:
     resources:
       requests:
         memory: 128Mi
-        cpu: 50m
+        cpu: 100m
       limits:
         memory: 256Mi
-        cpu: 100m
+        cpu: 300m
     # Volume settings
     volumeName: mongodb-data
     storage: 1Gi
@@ -118,7 +118,7 @@ infra:
     resources:
       requests:
         memory: 256Mi
-        cpu: 250m
+        cpu: 100m
       limits:
         memory: 512Mi
         cpu: 500m

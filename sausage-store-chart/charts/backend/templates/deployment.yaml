@@ -73,11 +73,11 @@ spec:
             httpGet:
               path: {{ .Values.livenessProbe.path }}
               port: {{ .Values.livenessProbe.port }}
-            initialDelaySeconds: 15
+            initialDelaySeconds: 90
             periodSeconds: 30
             failureThreshold: 3
             successThreshold: 1
-            timeoutSeconds: 5
+            timeoutSeconds: 10
       volumes:
       - name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
         configMap:
